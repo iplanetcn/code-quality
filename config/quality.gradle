@@ -5,7 +5,7 @@ apply plugin: 'pmd'
 def qualityConfigDir = "$project.rootDir/config/quality"
 def reportsDir = "$project.rootDir/build/reports"
 
-check.dependsOn 'checkstyle', 'findbugs', 'pmd', 'lint'
+check.dependsOn 'checkstyle', 'findbugsXml', 'findbugsHtml', 'pmd', 'lint'
 
 task checkstyle(type: Checkstyle, group: 'Verification', description: 'Runs code style checks') {
 
@@ -18,7 +18,7 @@ task checkstyle(type: Checkstyle, group: 'Verification', description: 'Runs code
 
     reports {
         xml.enabled = true
-        html.enabled = false
+        html.enabled = true
         xml {
             destination file("$reportsDir/checkstyle/checkstyle-results.xml")
         }
@@ -30,7 +30,7 @@ task checkstyle(type: Checkstyle, group: 'Verification', description: 'Runs code
     classpath = files()
 }
 
-task findbugs(type: FindBugs, group: 'Verification', description: 'Inspect java bytecode for bugs',
+task findbugsXml(type: FindBugs, group: 'Verification', description: 'Inspect java bytecode for bugs',
         dependsOn: ['compileDebugSources', 'compileReleaseSources']) {
 
     ignoreFailures = true
@@ -57,6 +57,33 @@ task findbugs(type: FindBugs, group: 'Verification', description: 'Inspect java 
     classpath = files()
 }
 
+task findbugsHtml(type: FindBugs, group: 'Verification', description: 'Inspect java bytecode for bugs',
+        dependsOn: ['compileDebugSources', 'compileReleaseSources']) {
+
+    ignoreFailures = true
+    effort = "max"
+    reportLevel = "high"
+    excludeFilter = new File("$qualityConfigDir/findbugs/android-exclude-filter.xml")
+    classes = files("$project.rootDir/app/build/intermediates/classes")
+
+    source 'src'
+    include '**/*.java'
+    exclude '**/gen/**'
+
+    reports {
+        xml.enabled = false
+        html.enabled = true
+        xml {
+            destination file("$reportsDir/findbugs/findbugs-results.xml")
+        }
+        html {
+            destination file("$reportsDir/findbugs/findbugs-results.html")
+        }
+    }
+
+    classpath = files()
+}
+
 task pmd(type: Pmd, group: 'Verification', description: 'Inspect sourcecode for bugs') {
     ignoreFailures = true
 
@@ -69,7 +96,7 @@ task pmd(type: Pmd, group: 'Verification', description: 'Inspect sourcecode for 
 
     reports {
         xml.enabled = true
-        html.enabled = false
+        html.enabled = true
         xml {
             destination file("$reportsDir/pmd/pmd-results.xml")
         }
@@ -83,9 +110,11 @@ android {
     lintOptions {
         abortOnError false
         xmlReport true
-        htmlReport false
+        htmlReport true
         lintConfig file("$qualityConfigDir/lint/lint.xml")
         htmlOutput file("$reportsDir/lint/lint-results.html")
         xmlOutput file("$reportsDir/lint/lint-results.xml")
     }
 }
+
+
