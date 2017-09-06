@@ -3,11 +3,12 @@ apply plugin: 'findbugs'
 apply plugin: 'pmd'
 
 def qualityConfigDir = "$project.rootDir/config/quality"
-def reportsDir = "$project.rootDir/build/reports"
+def reportsDir = "$project.buildDir/reports"
 
 check.dependsOn 'checkstyle', 'findbugsXml', 'findbugsHtml', 'pmd', 'lint'
 
-task checkstyle(type: Checkstyle, group: 'Verification', description: 'Runs code style checks') {
+task checkstyle(type: Checkstyle, group: 'Verification',
+        description: 'Runs code style checks') {
 
     ignoreFailures = true
     configFile file("$qualityConfigDir/checkstyle/checkstyle.xml")
@@ -30,7 +31,8 @@ task checkstyle(type: Checkstyle, group: 'Verification', description: 'Runs code
     classpath = files()
 }
 
-task findbugsXml(type: FindBugs, group: 'Verification', description: 'Inspect java bytecode for bugs',
+task findbugsXml(type: FindBugs, group: 'Verification',
+        description: 'Inspect java bytecode for bugs',
         dependsOn: ['compileDebugSources', 'compileReleaseSources']) {
 
     ignoreFailures = true
@@ -57,7 +59,8 @@ task findbugsXml(type: FindBugs, group: 'Verification', description: 'Inspect ja
     classpath = files()
 }
 
-task findbugsHtml(type: FindBugs, group: 'Verification', description: 'Inspect java bytecode for bugs',
+task findbugsHtml(type: FindBugs, group: 'Verification',
+        description: 'Inspect java bytecode for bugs',
         dependsOn: ['compileDebugSources', 'compileReleaseSources']) {
 
     ignoreFailures = true
@@ -84,7 +87,8 @@ task findbugsHtml(type: FindBugs, group: 'Verification', description: 'Inspect j
     classpath = files()
 }
 
-task pmd(type: Pmd, group: 'Verification', description: 'Inspect sourcecode for bugs') {
+task pmd(type: Pmd, group: 'Verification',
+        description: 'Inspect sourcecode for bugs') {
     ignoreFailures = true
 
     ruleSetFiles = files("$qualityConfigDir/pmd/pmd.xml")
