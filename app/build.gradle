@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.dorongold.task-tree'
+apply from: "$rootDir/config/quality.gradle"
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -21,6 +23,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
 }
 
 dependencies {
@@ -32,6 +35,3 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 }
-
-
-apply from: "$rootDir/config/quality.gradle"
