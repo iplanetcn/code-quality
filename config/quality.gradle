@@ -121,4 +121,15 @@ android {
     }
 }
 
+task qualityCheck(dependsOn: ['checkstyle', 'findbugsXml', 'findbugsHtml', 'pmd', 'lint']) {
+    doLast {
+        print("quality check finished\n")
+    }
+}
+
+configure(qualityCheck) {
+    group = 'verification'
+    description = 'quality check via checkstyle,findbugs,pmd,lint'
+}
+
 
